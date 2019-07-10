@@ -1,0 +1,50 @@
+principal{
+
+    inicio_variables
+        entero n, test1, test2;
+        lista de entero lista_e_1, lista_e_2, l_result;
+        lista de real lista_r_1, lista_r_2;
+
+    fin_variables
+
+    procedimiento test (entero e1, entero e2) {
+
+        procedimiento test2 (entero e3, entero e4) {
+
+        }
+
+
+        test2(e1,e2);
+    }
+
+    procedimiento mostrarLista (lista de entero l) {
+        inicio_variables
+          entero n;
+        fin_variables
+
+        hacer (desde n = 0 hasta n < #l) {
+            escribir "\n Valor de la posicion ", n, " = ", l@n, "\n"; 
+            n = n+1;
+        }
+
+    }
+
+    lista_e_1 = [1,2,3,4,5,6];
+    lista_e_2 = [7,8,9,10,11];
+
+    escribir "\n Mostramos lista lista_e_1: \n";
+    mostrarLista(lista_e_1);
+
+    escribir "\n Mostramos lista lista_e_2: ";
+    mostrarLista(lista_e_2);
+
+    escribir "\n Concatenamos las listas y mostramos el resultado: ";
+
+    l_result = lista_e_1 ** lista_e_2;
+    mostrarLista(l_result);
+
+    test1 = 0;
+    test2 = 0;
+    test(test1,test2);
+
+}

@@ -1,0 +1,28 @@
+principal{
+
+    inicio_variables
+        entero n, curr;
+    fin_variables
+
+    escribir "Introduce un numero : ";
+    leer n;
+    escribir " ", n, " == ";
+
+    curr = 2;
+
+    mientras (curr <= n) hacer{
+        inicio_variables
+            entero d;
+        fin_variables
+        d = n/curr;
+        si (d * curr == n) {
+            escribir "* ", curr, " ";
+            n = n/curr;
+        }
+        si_no
+            curr = curr + 1;
+    }
+
+    escribir "\n";
+
+}

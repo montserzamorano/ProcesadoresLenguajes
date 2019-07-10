@@ -1,0 +1,11 @@
+
+principal{
+
+    inicio_variables
+        entero ve ;
+    fin_variables
+
+    ve>>;
+    ve<<;
+
+}

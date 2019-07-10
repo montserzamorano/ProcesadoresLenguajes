@@ -1,0 +1,28 @@
+principal{
+
+    inicio_variables
+        entero valor,a, b, hola;
+        booleano boo;
+    fin_variables
+
+    boo = verdadero;
+
+    mientras (!boo) hacer{
+        hola = 2 + 7 * a;
+    }
+
+    si (b==1) {
+        inicio_variables
+            entero varEntero1, varEntero2;
+            real plsWork;
+        fin_variables
+
+        hola = 2;
+    }
+
+    si (b == 1){
+
+        hola = 2;
+    }
+
+}

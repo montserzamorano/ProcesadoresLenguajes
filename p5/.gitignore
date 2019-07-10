@@ -1,0 +1,6 @@
+./bin/yacc_syntactic
+./obj/*.o
+./src/y.output
+./src/y.tab.c
+./src/y.tab.h
+./src/y.dot

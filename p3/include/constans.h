@@ -1,0 +1,47 @@
+#ifndef __CONSTANTS__
+#define __CONSTANTS__
+
+#define PRINCIPAL 257
+#define INICIO_VARIABLES 258
+#define FIN_VARIABLES 259
+#define PROCEDIMIENTO 260
+#define COMA 261
+#define PUNTO_Y_COMA 262
+#define INICIO_PARENTESIS 263
+#define FIN_PARENTESIS 264
+#define INICIO_LLAVES 265
+#define FIN_LLAVES 266
+#define INICIO_CORCHETE 267
+#define FIN_CORCHETE 268
+#define SI 269
+#define SI_NO 270
+#define HACER 271
+#define DESDE 272
+#define HASTA 273
+#define EN 274
+#define MIENTRAS 275
+#define LISTA_TIPO 276
+#define ENTRADA 277
+#define SALIDA 278
+#define ASIGNACION 279
+#define TIPO_BASICO 280
+#define ENTERO 281
+#define REAL 282
+#define CARACTER 283
+#define BOOLEANO 284
+#define SIGNO 285
+#define OP_UNARIO 286
+#define OP_MENOS_MENOS 287
+#define OP_INICIO_LISTA 288
+#define OP_MAS_MAS 289
+#define OP_ARR 290
+#define OP_ES 291
+#define INICIO_LISTA 292
+#define IDENTIFICADOR 293
+#define CADENA 294
+#define LISTA_DE 295
+#define OP_RELACION 296
+#define OP_MULTIPLICATIVO 297
+#define OP_IGUALDAD 298
+
+#endif

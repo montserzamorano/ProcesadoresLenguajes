@@ -1,0 +1,3056 @@
+Estado 180 conflictos: 1 desplazamiento/reducción
+
+
+Gramática
+
+    0 $accept: programa $end
+
+    1 $@1: %empty
+
+    2 programa: PRINCIPAL $@1 bloque
+
+    3 $@2: %empty
+
+    4 bloque: INI_LLAVES $@2 contenido_bloque FIN_LLAVES
+
+    5 $@3: %empty
+
+    6 contenido_bloque: declar_de_variables_locales $@3 declar_de_subprogs contenido_bloque2
+
+    7 contenido_bloque2: sentencias
+    8                  | %empty
+
+    9 declar_de_subprogs: declar_de_subprogs declar_subprog
+   10                   | %empty
+
+   11 $@4: %empty
+
+   12 declar_subprog: cabecera_subprog $@4 bloque
+
+   13 $@5: %empty
+
+   14 cabecera_subprog: PROCEDIMIENTO IDENTIFICADOR $@5 INI_PARENTESIS parametros FIN_PARENTESIS
+
+   15 parametros: parametros COMA tipo_dato IDENTIFICADOR
+   16           | parametros error tipo_dato IDENTIFICADOR
+   17           | tipo_dato IDENTIFICADOR
+   18           | %empty
+
+   19 $@6: %empty
+
+   20 declar_de_variables_locales: INI_VARIABLES $@6 variables_locales FIN_VARIABLES
+   21                            | %empty
+
+   22 variables_locales: variables_locales cuerpo_declar_variables
+   23                  | cuerpo_declar_variables
+
+   24 $@7: %empty
+
+   25 $@8: %empty
+
+   26 cuerpo_declar_variables: tipo_dato $@7 variables $@8 PUNTO_Y_COMA
+   27                        | error
+
+   28 variables: IDENTIFICADOR
+   29          | IDENTIFICADOR COMA variables
+   30          | IDENTIFICADOR error variables
+
+   31 sentencias: sentencias sentencia
+   32           | sentencia
+
+   33 sentencia: bloque
+   34          | sentencia2
+   35          | sentencia_asignacion PUNTO_Y_COMA
+   36          | sentencia_entrada
+   37          | sentencia_salida
+   38          | sentencia_for
+
+   39 sentencia2: sentencia_if
+   40           | sentencia_while
+   41           | sentencia_mover_lista
+   42           | sentencia_comienzo
+   43           | llamada_proced
+
+   44 sentencia_comienzo: OP_INICIO_LISTA expresion
+
+   45 $@9: %empty
+
+   46 $@10: %empty
+
+   47 sentencia_asignacion: IDENTIFICADOR $@9 ASIGNACION $@10 expresion
+   48                     | error
+
+   49 $@11: %empty
+
+   50 sentencia_if: SI INI_PARENTESIS expresion FIN_PARENTESIS $@11 sentencia sentencia_else
+
+   51 $@12: %empty
+
+   52 sentencia_else: SINO $@12 sentencia
+   53               | %empty
+
+   54 $@13: %empty
+
+   55 sentencia_while: MIENTRAS INI_PARENTESIS expresion $@13 FIN_PARENTESIS HACER sentencia
+
+   56 $@14: %empty
+
+   57 $@15: %empty
+
+   58 sentencia_for: HACER INI_PARENTESIS DESDE sentencia_asignacion $@14 HASTA expresion $@15 FIN_PARENTESIS sentencia
+
+   59 sentencia_entrada: LEER IDENTIFICADOR PUNTO_Y_COMA
+
+   60 sentencia_salida: ESCRIBIR expresiones_salida PUNTO_Y_COMA
+
+   61 expresiones_salida: expresiones_salida COMA expresion_cadena
+   62                   | expresion_cadena
+
+   63 @16: %empty
+
+   64 expresion_cadena: @16 expresion
+   65                 | CADENA
+
+   66 @17: %empty
+
+   67 sentencia_mover_lista: expresion OP_ES @17 PUNTO_Y_COMA
+
+   68 $@18: %empty
+
+   69 llamada_proced: IDENTIFICADOR INI_PARENTESIS $@18 expresiones FIN_PARENTESIS PUNTO_Y_COMA
+
+   70 expresiones: expresiones COMA expresion
+   71            | expresion
+
+   72 expresion: OP_LONGITUD_LISTA expresion
+   73          | expresion OP_ES
+   74          | OP_ELEMENTO_LISTA expresion
+   75          | OP_UNARIO expresion
+   76          | IDENTIFICADOR OP_ARR expresion
+   77          | expresion OP_OR_LOGICO expresion
+   78          | expresion OP_AND_LOGICO expresion
+   79          | expresion OP_OR_BIT expresion
+   80          | expresion OP_EXC_OR expresion
+   81          | expresion OP_IGUALDAD expresion
+   82          | expresion OP_RELACION expresion
+   83          | SIGNO expresion
+   84          | expresion SIGNO expresion
+   85          | expresion OP_MULTIPLICATIVO expresion
+   86          | expresion OP_CONCATENAR expresion
+   87          | expresion OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion OP_MENOS_MENOS expresion
+   89          | INI_PARENTESIS expresion FIN_PARENTESIS
+   90          | IDENTIFICADOR
+   91          | constante
+   92          | lista_constantes
+   93          | error
+
+   94 tipo_dato: TIPO_BASICO
+   95          | LISTA_DE TIPO_BASICO
+
+   96 lista_constantes: INI_CORCHETE valores_lista FIN_CORCHETE
+
+   97 valores_lista: lista_constantes_reales
+   98              | lista_constantes_enteros
+   99              | lista_constantes_booleanos
+  100              | lista_constantes_caracteres
+
+  101 lista_constantes_reales: signo CONST_REAL
+  102                        | signo CONST_REAL COMA lista_constantes_reales
+
+  103 lista_constantes_enteros: signo CONST_ENTERO
+  104                         | signo CONST_ENTERO COMA lista_constantes_enteros
+
+  105 lista_constantes_booleanos: CONST_BOOLEANO
+  106                           | CONST_BOOLEANO COMA lista_constantes_booleanos
+
+  107 lista_constantes_caracteres: CONST_CARACTER
+  108                            | CONST_CARACTER COMA lista_constantes_caracteres
+
+  109 constante: CONST_REAL
+  110          | CONST_ENTERO
+  111          | CONST_CARACTER
+  112          | CONST_BOOLEANO
+
+  113 signo: %empty
+  114      | SIGNO
+
+
+Terminales con las reglas donde aparecen
+
+$end (0) 0
+error (256) 16 27 30 48 93
+OP_OR_LOGICO (258) 77
+OP_AND_LOGICO (259) 78
+OP_OR_BIT (260) 79
+OP_EXC_OR (261) 80
+OP_IGUALDAD (262) 81
+OP_RELACION (263) 82
+SIGNO (264) 83 84 114
+OP_MULTIPLICATIVO (265) 85
+OP_UNARIO (266) 75
+OP_CONCATENAR (267) 86
+OP_MAS_MAS (268) 87
+OP_MENOS_MENOS (269) 88
+OP_ARR (270) 76 87
+OP_ES (271) 67 73
+OP_INICIO_LISTA (272) 44
+OP_LONGITUD_LISTA (273) 72
+OP_ELEMENTO_LISTA (274) 74
+PRINCIPAL (275) 2
+ASIGNACION (276) 47
+PROCEDIMIENTO (277) 14
+LISTA_DE (278) 95
+INI_CORCHETE (279) 96
+FIN_CORCHETE (280) 96
+INI_LLAVES (281) 4
+FIN_LLAVES (282) 4
+MIENTRAS (283) 55
+SI (284) 50
+SINO (285) 52
+HACER (286) 55 58
+HASTA (287) 58
+DESDE (288) 58
+INI_VARIABLES (289) 20
+FIN_VARIABLES (290) 20
+LEER (291) 59
+ESCRIBIR (292) 60
+INI_PARENTESIS (293) 14 50 55 58 69 89
+FIN_PARENTESIS (294) 14 50 55 58 69 89
+COMA (295) 15 29 61 70 102 104 106 108
+CONST_BOOLEANO (296) 105 106 112
+CONST_CARACTER (297) 107 108 111
+CONST_ENTERO (298) 103 104 110
+CONST_REAL (299) 101 102 109
+IDENTIFICADOR (300) 14 15 16 17 28 29 30 47 59 69 76 90
+PUNTO_Y_COMA (301) 26 35 59 60 67 69
+CADENA (302) 65
+TIPO_BASICO (303) 94 95
+
+
+No terminales con las reglas donde aparecen
+
+$accept (49)
+    en la izquierda: 0
+programa (50)
+    en la izquierda: 2, en la derecha: 0
+$@1 (51)
+    en la izquierda: 1, en la derecha: 2
+bloque (52)
+    en la izquierda: 4, en la derecha: 2 12 33
+$@2 (53)
+    en la izquierda: 3, en la derecha: 4
+contenido_bloque (54)
+    en la izquierda: 6, en la derecha: 4
+$@3 (55)
+    en la izquierda: 5, en la derecha: 6
+contenido_bloque2 (56)
+    en la izquierda: 7 8, en la derecha: 6
+declar_de_subprogs (57)
+    en la izquierda: 9 10, en la derecha: 6 9
+declar_subprog (58)
+    en la izquierda: 12, en la derecha: 9
+$@4 (59)
+    en la izquierda: 11, en la derecha: 12
+cabecera_subprog (60)
+    en la izquierda: 14, en la derecha: 12
+$@5 (61)
+    en la izquierda: 13, en la derecha: 14
+parametros (62)
+    en la izquierda: 15 16 17 18, en la derecha: 14 15 16
+declar_de_variables_locales (63)
+    en la izquierda: 20 21, en la derecha: 6
+$@6 (64)
+    en la izquierda: 19, en la derecha: 20
+variables_locales (65)
+    en la izquierda: 22 23, en la derecha: 20 22
+cuerpo_declar_variables (66)
+    en la izquierda: 26 27, en la derecha: 22 23
+$@7 (67)
+    en la izquierda: 24, en la derecha: 26
+$@8 (68)
+    en la izquierda: 25, en la derecha: 26
+variables (69)
+    en la izquierda: 28 29 30, en la derecha: 26 29 30
+sentencias (70)
+    en la izquierda: 31 32, en la derecha: 7 31
+sentencia (71)
+    en la izquierda: 33 34 35 36 37 38, en la derecha: 31 32 50 52
+    55 58
+sentencia2 (72)
+    en la izquierda: 39 40 41 42 43, en la derecha: 34
+sentencia_comienzo (73)
+    en la izquierda: 44, en la derecha: 42
+sentencia_asignacion (74)
+    en la izquierda: 47 48, en la derecha: 35 58
+$@9 (75)
+    en la izquierda: 45, en la derecha: 47
+$@10 (76)
+    en la izquierda: 46, en la derecha: 47
+sentencia_if (77)
+    en la izquierda: 50, en la derecha: 39
+$@11 (78)
+    en la izquierda: 49, en la derecha: 50
+sentencia_else (79)
+    en la izquierda: 52 53, en la derecha: 50
+$@12 (80)
+    en la izquierda: 51, en la derecha: 52
+sentencia_while (81)
+    en la izquierda: 55, en la derecha: 40
+$@13 (82)
+    en la izquierda: 54, en la derecha: 55
+sentencia_for (83)
+    en la izquierda: 58, en la derecha: 38
+$@14 (84)
+    en la izquierda: 56, en la derecha: 58
+$@15 (85)
+    en la izquierda: 57, en la derecha: 58
+sentencia_entrada (86)
+    en la izquierda: 59, en la derecha: 36
+sentencia_salida (87)
+    en la izquierda: 60, en la derecha: 37
+expresiones_salida (88)
+    en la izquierda: 61 62, en la derecha: 60 61
+expresion_cadena (89)
+    en la izquierda: 64 65, en la derecha: 61 62
+@16 (90)
+    en la izquierda: 63, en la derecha: 64
+sentencia_mover_lista (91)
+    en la izquierda: 67, en la derecha: 41
+@17 (92)
+    en la izquierda: 66, en la derecha: 67
+llamada_proced (93)
+    en la izquierda: 69, en la derecha: 43
+$@18 (94)
+    en la izquierda: 68, en la derecha: 69
+expresiones (95)
+    en la izquierda: 70 71, en la derecha: 69 70
+expresion (96)
+    en la izquierda: 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87
+    88 89 90 91 92 93, en la derecha: 44 47 50 55 58 64 67 70 71 72
+    73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89
+tipo_dato (97)
+    en la izquierda: 94 95, en la derecha: 15 16 17 26
+lista_constantes (98)
+    en la izquierda: 96, en la derecha: 92
+valores_lista (99)
+    en la izquierda: 97 98 99 100, en la derecha: 96
+lista_constantes_reales (100)
+    en la izquierda: 101 102, en la derecha: 97 102
+lista_constantes_enteros (101)
+    en la izquierda: 103 104, en la derecha: 98 104
+lista_constantes_booleanos (102)
+    en la izquierda: 105 106, en la derecha: 99 106
+lista_constantes_caracteres (103)
+    en la izquierda: 107 108, en la derecha: 100 108
+constante (104)
+    en la izquierda: 109 110 111 112, en la derecha: 91
+signo (105)
+    en la izquierda: 113 114, en la derecha: 101 102 103 104
+
+
+Estado 0
+
+    0 $accept: . programa $end
+
+    PRINCIPAL  desplazar e ir al estado 1
+
+    programa  ir al estado 2
+
+
+Estado 1
+
+    2 programa: PRINCIPAL . $@1 bloque
+
+    $default  reduce usando la regla 1 ($@1)
+
+    $@1  ir al estado 3
+
+
+Estado 2
+
+    0 $accept: programa . $end
+
+    $end  desplazar e ir al estado 4
+
+
+Estado 3
+
+    2 programa: PRINCIPAL $@1 . bloque
+
+    INI_LLAVES  desplazar e ir al estado 5
+
+    bloque  ir al estado 6
+
+
+Estado 4
+
+    0 $accept: programa $end .
+
+    $default  aceptar
+
+
+Estado 5
+
+    4 bloque: INI_LLAVES . $@2 contenido_bloque FIN_LLAVES
+
+    $default  reduce usando la regla 3 ($@2)
+
+    $@2  ir al estado 7
+
+
+Estado 6
+
+    2 programa: PRINCIPAL $@1 bloque .
+
+    $default  reduce usando la regla 2 (programa)
+
+
+Estado 7
+
+    4 bloque: INI_LLAVES $@2 . contenido_bloque FIN_LLAVES
+
+    INI_VARIABLES  desplazar e ir al estado 8
+
+    $default  reduce usando la regla 21 (declar_de_variables_locales)
+
+    contenido_bloque             ir al estado 9
+    declar_de_variables_locales  ir al estado 10
+
+
+Estado 8
+
+   20 declar_de_variables_locales: INI_VARIABLES . $@6 variables_locales FIN_VARIABLES
+
+    $default  reduce usando la regla 19 ($@6)
+
+    $@6  ir al estado 11
+
+
+Estado 9
+
+    4 bloque: INI_LLAVES $@2 contenido_bloque . FIN_LLAVES
+
+    FIN_LLAVES  desplazar e ir al estado 12
+
+
+Estado 10
+
+    6 contenido_bloque: declar_de_variables_locales . $@3 declar_de_subprogs contenido_bloque2
+
+    $default  reduce usando la regla 5 ($@3)
+
+    $@3  ir al estado 13
+
+
+Estado 11
+
+   20 declar_de_variables_locales: INI_VARIABLES $@6 . variables_locales FIN_VARIABLES
+
+    error        desplazar e ir al estado 14
+    LISTA_DE     desplazar e ir al estado 15
+    TIPO_BASICO  desplazar e ir al estado 16
+
+    variables_locales        ir al estado 17
+    cuerpo_declar_variables  ir al estado 18
+    tipo_dato                ir al estado 19
+
+
+Estado 12
+
+    4 bloque: INI_LLAVES $@2 contenido_bloque FIN_LLAVES .
+
+    $default  reduce usando la regla 4 (bloque)
+
+
+Estado 13
+
+    6 contenido_bloque: declar_de_variables_locales $@3 . declar_de_subprogs contenido_bloque2
+
+    $default  reduce usando la regla 10 (declar_de_subprogs)
+
+    declar_de_subprogs  ir al estado 20
+
+
+Estado 14
+
+   27 cuerpo_declar_variables: error .
+
+    $default  reduce usando la regla 27 (cuerpo_declar_variables)
+
+
+Estado 15
+
+   95 tipo_dato: LISTA_DE . TIPO_BASICO
+
+    TIPO_BASICO  desplazar e ir al estado 21
+
+
+Estado 16
+
+   94 tipo_dato: TIPO_BASICO .
+
+    $default  reduce usando la regla 94 (tipo_dato)
+
+
+Estado 17
+
+   20 declar_de_variables_locales: INI_VARIABLES $@6 variables_locales . FIN_VARIABLES
+   22 variables_locales: variables_locales . cuerpo_declar_variables
+
+    error          desplazar e ir al estado 14
+    LISTA_DE       desplazar e ir al estado 15
+    FIN_VARIABLES  desplazar e ir al estado 22
+    TIPO_BASICO    desplazar e ir al estado 16
+
+    cuerpo_declar_variables  ir al estado 23
+    tipo_dato                ir al estado 19
+
+
+Estado 18
+
+   23 variables_locales: cuerpo_declar_variables .
+
+    $default  reduce usando la regla 23 (variables_locales)
+
+
+Estado 19
+
+   26 cuerpo_declar_variables: tipo_dato . $@7 variables $@8 PUNTO_Y_COMA
+
+    $default  reduce usando la regla 24 ($@7)
+
+    $@7  ir al estado 24
+
+
+Estado 20
+
+    6 contenido_bloque: declar_de_variables_locales $@3 declar_de_subprogs . contenido_bloque2
+    9 declar_de_subprogs: declar_de_subprogs . declar_subprog
+
+    error              desplazar e ir al estado 25
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_INICIO_LISTA    desplazar e ir al estado 28
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    PROCEDIMIENTO      desplazar e ir al estado 31
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_LLAVES         desplazar e ir al estado 5
+    MIENTRAS           desplazar e ir al estado 33
+    SI                 desplazar e ir al estado 34
+    HACER              desplazar e ir al estado 35
+    LEER               desplazar e ir al estado 36
+    ESCRIBIR           desplazar e ir al estado 37
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 43
+
+    FIN_LLAVES  reduce usando la regla 8 (contenido_bloque2)
+
+    bloque                 ir al estado 44
+    contenido_bloque2      ir al estado 45
+    declar_subprog         ir al estado 46
+    cabecera_subprog       ir al estado 47
+    sentencias             ir al estado 48
+    sentencia              ir al estado 49
+    sentencia2             ir al estado 50
+    sentencia_comienzo     ir al estado 51
+    sentencia_asignacion   ir al estado 52
+    sentencia_if           ir al estado 53
+    sentencia_while        ir al estado 54
+    sentencia_for          ir al estado 55
+    sentencia_entrada      ir al estado 56
+    sentencia_salida       ir al estado 57
+    sentencia_mover_lista  ir al estado 58
+    llamada_proced         ir al estado 59
+    expresion              ir al estado 60
+    lista_constantes       ir al estado 61
+    constante              ir al estado 62
+
+
+Estado 21
+
+   95 tipo_dato: LISTA_DE TIPO_BASICO .
+
+    $default  reduce usando la regla 95 (tipo_dato)
+
+
+Estado 22
+
+   20 declar_de_variables_locales: INI_VARIABLES $@6 variables_locales FIN_VARIABLES .
+
+    $default  reduce usando la regla 20 (declar_de_variables_locales)
+
+
+Estado 23
+
+   22 variables_locales: variables_locales cuerpo_declar_variables .
+
+    $default  reduce usando la regla 22 (variables_locales)
+
+
+Estado 24
+
+   26 cuerpo_declar_variables: tipo_dato $@7 . variables $@8 PUNTO_Y_COMA
+
+    IDENTIFICADOR  desplazar e ir al estado 63
+
+    variables  ir al estado 64
+
+
+Estado 25
+
+   48 sentencia_asignacion: error .
+   93 expresion: error .
+
+    PUNTO_Y_COMA  reduce usando la regla 48 (sentencia_asignacion)
+    $default      reduce usando la regla 93 (expresion)
+
+
+Estado 26
+
+   83 expresion: SIGNO . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 67
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 27
+
+   75 expresion: OP_UNARIO . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 68
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 28
+
+   44 sentencia_comienzo: OP_INICIO_LISTA . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 69
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 29
+
+   72 expresion: OP_LONGITUD_LISTA . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 70
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 30
+
+   74 expresion: OP_ELEMENTO_LISTA . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 71
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 31
+
+   14 cabecera_subprog: PROCEDIMIENTO . IDENTIFICADOR $@5 INI_PARENTESIS parametros FIN_PARENTESIS
+
+    IDENTIFICADOR  desplazar e ir al estado 72
+
+
+Estado 32
+
+   96 lista_constantes: INI_CORCHETE . valores_lista FIN_CORCHETE
+
+    SIGNO           desplazar e ir al estado 73
+    CONST_BOOLEANO  desplazar e ir al estado 74
+    CONST_CARACTER  desplazar e ir al estado 75
+
+    $default  reduce usando la regla 113 (signo)
+
+    valores_lista                ir al estado 76
+    lista_constantes_reales      ir al estado 77
+    lista_constantes_enteros     ir al estado 78
+    lista_constantes_booleanos   ir al estado 79
+    lista_constantes_caracteres  ir al estado 80
+    signo                        ir al estado 81
+
+
+Estado 33
+
+   55 sentencia_while: MIENTRAS . INI_PARENTESIS expresion $@13 FIN_PARENTESIS HACER sentencia
+
+    INI_PARENTESIS  desplazar e ir al estado 82
+
+
+Estado 34
+
+   50 sentencia_if: SI . INI_PARENTESIS expresion FIN_PARENTESIS $@11 sentencia sentencia_else
+
+    INI_PARENTESIS  desplazar e ir al estado 83
+
+
+Estado 35
+
+   58 sentencia_for: HACER . INI_PARENTESIS DESDE sentencia_asignacion $@14 HASTA expresion $@15 FIN_PARENTESIS sentencia
+
+    INI_PARENTESIS  desplazar e ir al estado 84
+
+
+Estado 36
+
+   59 sentencia_entrada: LEER . IDENTIFICADOR PUNTO_Y_COMA
+
+    IDENTIFICADOR  desplazar e ir al estado 85
+
+
+Estado 37
+
+   60 sentencia_salida: ESCRIBIR . expresiones_salida PUNTO_Y_COMA
+
+    CADENA  desplazar e ir al estado 86
+
+    $default  reduce usando la regla 63 (@16)
+
+    expresiones_salida  ir al estado 87
+    expresion_cadena    ir al estado 88
+    @16                 ir al estado 89
+
+
+Estado 38
+
+   89 expresion: INI_PARENTESIS . expresion FIN_PARENTESIS
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 90
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 39
+
+  112 constante: CONST_BOOLEANO .
+
+    $default  reduce usando la regla 112 (constante)
+
+
+Estado 40
+
+  111 constante: CONST_CARACTER .
+
+    $default  reduce usando la regla 111 (constante)
+
+
+Estado 41
+
+  110 constante: CONST_ENTERO .
+
+    $default  reduce usando la regla 110 (constante)
+
+
+Estado 42
+
+  109 constante: CONST_REAL .
+
+    $default  reduce usando la regla 109 (constante)
+
+
+Estado 43
+
+   47 sentencia_asignacion: IDENTIFICADOR . $@9 ASIGNACION $@10 expresion
+   69 llamada_proced: IDENTIFICADOR . INI_PARENTESIS $@18 expresiones FIN_PARENTESIS PUNTO_Y_COMA
+   76 expresion: IDENTIFICADOR . OP_ARR expresion
+   90          | IDENTIFICADOR .
+
+    OP_ARR          desplazar e ir al estado 91
+    INI_PARENTESIS  desplazar e ir al estado 92
+
+    ASIGNACION  reduce usando la regla 45 ($@9)
+    $default    reduce usando la regla 90 (expresion)
+
+    $@9  ir al estado 93
+
+
+Estado 44
+
+   33 sentencia: bloque .
+
+    $default  reduce usando la regla 33 (sentencia)
+
+
+Estado 45
+
+    6 contenido_bloque: declar_de_variables_locales $@3 declar_de_subprogs contenido_bloque2 .
+
+    $default  reduce usando la regla 6 (contenido_bloque)
+
+
+Estado 46
+
+    9 declar_de_subprogs: declar_de_subprogs declar_subprog .
+
+    $default  reduce usando la regla 9 (declar_de_subprogs)
+
+
+Estado 47
+
+   12 declar_subprog: cabecera_subprog . $@4 bloque
+
+    $default  reduce usando la regla 11 ($@4)
+
+    $@4  ir al estado 94
+
+
+Estado 48
+
+    7 contenido_bloque2: sentencias .
+   31 sentencias: sentencias . sentencia
+
+    error              desplazar e ir al estado 25
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_INICIO_LISTA    desplazar e ir al estado 28
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_LLAVES         desplazar e ir al estado 5
+    MIENTRAS           desplazar e ir al estado 33
+    SI                 desplazar e ir al estado 34
+    HACER              desplazar e ir al estado 35
+    LEER               desplazar e ir al estado 36
+    ESCRIBIR           desplazar e ir al estado 37
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 43
+
+    FIN_LLAVES  reduce usando la regla 7 (contenido_bloque2)
+
+    bloque                 ir al estado 44
+    sentencia              ir al estado 95
+    sentencia2             ir al estado 50
+    sentencia_comienzo     ir al estado 51
+    sentencia_asignacion   ir al estado 52
+    sentencia_if           ir al estado 53
+    sentencia_while        ir al estado 54
+    sentencia_for          ir al estado 55
+    sentencia_entrada      ir al estado 56
+    sentencia_salida       ir al estado 57
+    sentencia_mover_lista  ir al estado 58
+    llamada_proced         ir al estado 59
+    expresion              ir al estado 60
+    lista_constantes       ir al estado 61
+    constante              ir al estado 62
+
+
+Estado 49
+
+   32 sentencias: sentencia .
+
+    $default  reduce usando la regla 32 (sentencias)
+
+
+Estado 50
+
+   34 sentencia: sentencia2 .
+
+    $default  reduce usando la regla 34 (sentencia)
+
+
+Estado 51
+
+   42 sentencia2: sentencia_comienzo .
+
+    $default  reduce usando la regla 42 (sentencia2)
+
+
+Estado 52
+
+   35 sentencia: sentencia_asignacion . PUNTO_Y_COMA
+
+    PUNTO_Y_COMA  desplazar e ir al estado 96
+
+
+Estado 53
+
+   39 sentencia2: sentencia_if .
+
+    $default  reduce usando la regla 39 (sentencia2)
+
+
+Estado 54
+
+   40 sentencia2: sentencia_while .
+
+    $default  reduce usando la regla 40 (sentencia2)
+
+
+Estado 55
+
+   38 sentencia: sentencia_for .
+
+    $default  reduce usando la regla 38 (sentencia)
+
+
+Estado 56
+
+   36 sentencia: sentencia_entrada .
+
+    $default  reduce usando la regla 36 (sentencia)
+
+
+Estado 57
+
+   37 sentencia: sentencia_salida .
+
+    $default  reduce usando la regla 37 (sentencia)
+
+
+Estado 58
+
+   41 sentencia2: sentencia_mover_lista .
+
+    $default  reduce usando la regla 41 (sentencia2)
+
+
+Estado 59
+
+   43 sentencia2: llamada_proced .
+
+    $default  reduce usando la regla 43 (sentencia2)
+
+
+Estado 60
+
+   67 sentencia_mover_lista: expresion . OP_ES @17 PUNTO_Y_COMA
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_OR_LOGICO       desplazar e ir al estado 97
+    OP_AND_LOGICO      desplazar e ir al estado 98
+    OP_OR_BIT          desplazar e ir al estado 99
+    OP_EXC_OR          desplazar e ir al estado 100
+    OP_IGUALDAD        desplazar e ir al estado 101
+    OP_RELACION        desplazar e ir al estado 102
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 108
+
+
+Estado 61
+
+   92 expresion: lista_constantes .
+
+    $default  reduce usando la regla 92 (expresion)
+
+
+Estado 62
+
+   91 expresion: constante .
+
+    $default  reduce usando la regla 91 (expresion)
+
+
+Estado 63
+
+   28 variables: IDENTIFICADOR .
+   29          | IDENTIFICADOR . COMA variables
+   30          | IDENTIFICADOR . error variables
+
+    error  desplazar e ir al estado 109
+    COMA   desplazar e ir al estado 110
+
+    PUNTO_Y_COMA  reduce usando la regla 28 (variables)
+
+
+Estado 64
+
+   26 cuerpo_declar_variables: tipo_dato $@7 variables . $@8 PUNTO_Y_COMA
+
+    $default  reduce usando la regla 25 ($@8)
+
+    $@8  ir al estado 111
+
+
+Estado 65
+
+   93 expresion: error .
+
+    $default  reduce usando la regla 93 (expresion)
+
+
+Estado 66
+
+   76 expresion: IDENTIFICADOR . OP_ARR expresion
+   90          | IDENTIFICADOR .
+
+    OP_ARR  desplazar e ir al estado 91
+
+    $default  reduce usando la regla 90 (expresion)
+
+
+Estado 67
+
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   83          | SIGNO expresion .
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_CONCATENAR   desplazar e ir al estado 105
+    OP_MAS_MAS      desplazar e ir al estado 106
+    OP_MENOS_MENOS  desplazar e ir al estado 107
+    OP_ES           desplazar e ir al estado 112
+
+    $default  reduce usando la regla 83 (expresion)
+
+
+Estado 68
+
+   73 expresion: expresion . OP_ES
+   75          | OP_UNARIO expresion .
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_CONCATENAR   desplazar e ir al estado 105
+    OP_MAS_MAS      desplazar e ir al estado 106
+    OP_MENOS_MENOS  desplazar e ir al estado 107
+    OP_ES           desplazar e ir al estado 112
+
+    $default  reduce usando la regla 75 (expresion)
+
+
+Estado 69
+
+   44 sentencia_comienzo: OP_INICIO_LISTA expresion .
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_OR_LOGICO       desplazar e ir al estado 97
+    OP_AND_LOGICO      desplazar e ir al estado 98
+    OP_OR_BIT          desplazar e ir al estado 99
+    OP_EXC_OR          desplazar e ir al estado 100
+    OP_IGUALDAD        desplazar e ir al estado 101
+    OP_RELACION        desplazar e ir al estado 102
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+
+    $default  reduce usando la regla 44 (sentencia_comienzo)
+
+
+Estado 70
+
+   72 expresion: OP_LONGITUD_LISTA expresion .
+   73          | expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    $default  reduce usando la regla 72 (expresion)
+
+
+Estado 71
+
+   73 expresion: expresion . OP_ES
+   74          | OP_ELEMENTO_LISTA expresion .
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    $default  reduce usando la regla 74 (expresion)
+
+
+Estado 72
+
+   14 cabecera_subprog: PROCEDIMIENTO IDENTIFICADOR . $@5 INI_PARENTESIS parametros FIN_PARENTESIS
+
+    $default  reduce usando la regla 13 ($@5)
+
+    $@5  ir al estado 113
+
+
+Estado 73
+
+  114 signo: SIGNO .
+
+    $default  reduce usando la regla 114 (signo)
+
+
+Estado 74
+
+  105 lista_constantes_booleanos: CONST_BOOLEANO .
+  106                           | CONST_BOOLEANO . COMA lista_constantes_booleanos
+
+    COMA  desplazar e ir al estado 114
+
+    $default  reduce usando la regla 105 (lista_constantes_booleanos)
+
+
+Estado 75
+
+  107 lista_constantes_caracteres: CONST_CARACTER .
+  108                            | CONST_CARACTER . COMA lista_constantes_caracteres
+
+    COMA  desplazar e ir al estado 115
+
+    $default  reduce usando la regla 107 (lista_constantes_caracteres)
+
+
+Estado 76
+
+   96 lista_constantes: INI_CORCHETE valores_lista . FIN_CORCHETE
+
+    FIN_CORCHETE  desplazar e ir al estado 116
+
+
+Estado 77
+
+   97 valores_lista: lista_constantes_reales .
+
+    $default  reduce usando la regla 97 (valores_lista)
+
+
+Estado 78
+
+   98 valores_lista: lista_constantes_enteros .
+
+    $default  reduce usando la regla 98 (valores_lista)
+
+
+Estado 79
+
+   99 valores_lista: lista_constantes_booleanos .
+
+    $default  reduce usando la regla 99 (valores_lista)
+
+
+Estado 80
+
+  100 valores_lista: lista_constantes_caracteres .
+
+    $default  reduce usando la regla 100 (valores_lista)
+
+
+Estado 81
+
+  101 lista_constantes_reales: signo . CONST_REAL
+  102                        | signo . CONST_REAL COMA lista_constantes_reales
+  103 lista_constantes_enteros: signo . CONST_ENTERO
+  104                         | signo . CONST_ENTERO COMA lista_constantes_enteros
+
+    CONST_ENTERO  desplazar e ir al estado 117
+    CONST_REAL    desplazar e ir al estado 118
+
+
+Estado 82
+
+   55 sentencia_while: MIENTRAS INI_PARENTESIS . expresion $@13 FIN_PARENTESIS HACER sentencia
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 119
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 83
+
+   50 sentencia_if: SI INI_PARENTESIS . expresion FIN_PARENTESIS $@11 sentencia sentencia_else
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 120
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 84
+
+   58 sentencia_for: HACER INI_PARENTESIS . DESDE sentencia_asignacion $@14 HASTA expresion $@15 FIN_PARENTESIS sentencia
+
+    DESDE  desplazar e ir al estado 121
+
+
+Estado 85
+
+   59 sentencia_entrada: LEER IDENTIFICADOR . PUNTO_Y_COMA
+
+    PUNTO_Y_COMA  desplazar e ir al estado 122
+
+
+Estado 86
+
+   65 expresion_cadena: CADENA .
+
+    $default  reduce usando la regla 65 (expresion_cadena)
+
+
+Estado 87
+
+   60 sentencia_salida: ESCRIBIR expresiones_salida . PUNTO_Y_COMA
+   61 expresiones_salida: expresiones_salida . COMA expresion_cadena
+
+    COMA          desplazar e ir al estado 123
+    PUNTO_Y_COMA  desplazar e ir al estado 124
+
+
+Estado 88
+
+   62 expresiones_salida: expresion_cadena .
+
+    $default  reduce usando la regla 62 (expresiones_salida)
+
+
+Estado 89
+
+   64 expresion_cadena: @16 . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 125
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 90
+
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+   89          | INI_PARENTESIS expresion . FIN_PARENTESIS
+
+    OP_OR_LOGICO       desplazar e ir al estado 97
+    OP_AND_LOGICO      desplazar e ir al estado 98
+    OP_OR_BIT          desplazar e ir al estado 99
+    OP_EXC_OR          desplazar e ir al estado 100
+    OP_IGUALDAD        desplazar e ir al estado 101
+    OP_RELACION        desplazar e ir al estado 102
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+    FIN_PARENTESIS     desplazar e ir al estado 126
+
+
+Estado 91
+
+   76 expresion: IDENTIFICADOR OP_ARR . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 127
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 92
+
+   69 llamada_proced: IDENTIFICADOR INI_PARENTESIS . $@18 expresiones FIN_PARENTESIS PUNTO_Y_COMA
+
+    $default  reduce usando la regla 68 ($@18)
+
+    $@18  ir al estado 128
+
+
+Estado 93
+
+   47 sentencia_asignacion: IDENTIFICADOR $@9 . ASIGNACION $@10 expresion
+
+    ASIGNACION  desplazar e ir al estado 129
+
+
+Estado 94
+
+   12 declar_subprog: cabecera_subprog $@4 . bloque
+
+    INI_LLAVES  desplazar e ir al estado 5
+
+    bloque  ir al estado 130
+
+
+Estado 95
+
+   31 sentencias: sentencias sentencia .
+
+    $default  reduce usando la regla 31 (sentencias)
+
+
+Estado 96
+
+   35 sentencia: sentencia_asignacion PUNTO_Y_COMA .
+
+    $default  reduce usando la regla 35 (sentencia)
+
+
+Estado 97
+
+   77 expresion: expresion OP_OR_LOGICO . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 131
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 98
+
+   78 expresion: expresion OP_AND_LOGICO . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 132
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 99
+
+   79 expresion: expresion OP_OR_BIT . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 133
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 100
+
+   80 expresion: expresion OP_EXC_OR . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 134
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 101
+
+   81 expresion: expresion OP_IGUALDAD . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 135
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 102
+
+   82 expresion: expresion OP_RELACION . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 136
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 103
+
+   84 expresion: expresion SIGNO . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 137
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 104
+
+   85 expresion: expresion OP_MULTIPLICATIVO . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 138
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 105
+
+   86 expresion: expresion OP_CONCATENAR . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 139
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 106
+
+   87 expresion: expresion OP_MAS_MAS . expresion OP_ARR expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 140
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 107
+
+   88 expresion: expresion OP_MENOS_MENOS . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 141
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 108
+
+   67 sentencia_mover_lista: expresion OP_ES . @17 PUNTO_Y_COMA
+   73 expresion: expresion OP_ES .
+
+    PUNTO_Y_COMA  reduce usando la regla 66 (@17)
+    $default      reduce usando la regla 73 (expresion)
+
+    @17  ir al estado 142
+
+
+Estado 109
+
+   30 variables: IDENTIFICADOR error . variables
+
+    IDENTIFICADOR  desplazar e ir al estado 63
+
+    variables  ir al estado 143
+
+
+Estado 110
+
+   29 variables: IDENTIFICADOR COMA . variables
+
+    IDENTIFICADOR  desplazar e ir al estado 63
+
+    variables  ir al estado 144
+
+
+Estado 111
+
+   26 cuerpo_declar_variables: tipo_dato $@7 variables $@8 . PUNTO_Y_COMA
+
+    PUNTO_Y_COMA  desplazar e ir al estado 145
+
+
+Estado 112
+
+   73 expresion: expresion OP_ES .
+
+    $default  reduce usando la regla 73 (expresion)
+
+
+Estado 113
+
+   14 cabecera_subprog: PROCEDIMIENTO IDENTIFICADOR $@5 . INI_PARENTESIS parametros FIN_PARENTESIS
+
+    INI_PARENTESIS  desplazar e ir al estado 146
+
+
+Estado 114
+
+  106 lista_constantes_booleanos: CONST_BOOLEANO COMA . lista_constantes_booleanos
+
+    CONST_BOOLEANO  desplazar e ir al estado 74
+
+    lista_constantes_booleanos  ir al estado 147
+
+
+Estado 115
+
+  108 lista_constantes_caracteres: CONST_CARACTER COMA . lista_constantes_caracteres
+
+    CONST_CARACTER  desplazar e ir al estado 75
+
+    lista_constantes_caracteres  ir al estado 148
+
+
+Estado 116
+
+   96 lista_constantes: INI_CORCHETE valores_lista FIN_CORCHETE .
+
+    $default  reduce usando la regla 96 (lista_constantes)
+
+
+Estado 117
+
+  103 lista_constantes_enteros: signo CONST_ENTERO .
+  104                         | signo CONST_ENTERO . COMA lista_constantes_enteros
+
+    COMA  desplazar e ir al estado 149
+
+    $default  reduce usando la regla 103 (lista_constantes_enteros)
+
+
+Estado 118
+
+  101 lista_constantes_reales: signo CONST_REAL .
+  102                        | signo CONST_REAL . COMA lista_constantes_reales
+
+    COMA  desplazar e ir al estado 150
+
+    $default  reduce usando la regla 101 (lista_constantes_reales)
+
+
+Estado 119
+
+   55 sentencia_while: MIENTRAS INI_PARENTESIS expresion . $@13 FIN_PARENTESIS HACER sentencia
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_OR_LOGICO       desplazar e ir al estado 97
+    OP_AND_LOGICO      desplazar e ir al estado 98
+    OP_OR_BIT          desplazar e ir al estado 99
+    OP_EXC_OR          desplazar e ir al estado 100
+    OP_IGUALDAD        desplazar e ir al estado 101
+    OP_RELACION        desplazar e ir al estado 102
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+
+    $default  reduce usando la regla 54 ($@13)
+
+    $@13  ir al estado 151
+
+
+Estado 120
+
+   50 sentencia_if: SI INI_PARENTESIS expresion . FIN_PARENTESIS $@11 sentencia sentencia_else
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_OR_LOGICO       desplazar e ir al estado 97
+    OP_AND_LOGICO      desplazar e ir al estado 98
+    OP_OR_BIT          desplazar e ir al estado 99
+    OP_EXC_OR          desplazar e ir al estado 100
+    OP_IGUALDAD        desplazar e ir al estado 101
+    OP_RELACION        desplazar e ir al estado 102
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+    FIN_PARENTESIS     desplazar e ir al estado 152
+
+
+Estado 121
+
+   58 sentencia_for: HACER INI_PARENTESIS DESDE . sentencia_asignacion $@14 HASTA expresion $@15 FIN_PARENTESIS sentencia
+
+    error          desplazar e ir al estado 153
+    IDENTIFICADOR  desplazar e ir al estado 154
+
+    sentencia_asignacion  ir al estado 155
+
+
+Estado 122
+
+   59 sentencia_entrada: LEER IDENTIFICADOR PUNTO_Y_COMA .
+
+    $default  reduce usando la regla 59 (sentencia_entrada)
+
+
+Estado 123
+
+   61 expresiones_salida: expresiones_salida COMA . expresion_cadena
+
+    CADENA  desplazar e ir al estado 86
+
+    $default  reduce usando la regla 63 (@16)
+
+    expresion_cadena  ir al estado 156
+    @16               ir al estado 89
+
+
+Estado 124
+
+   60 sentencia_salida: ESCRIBIR expresiones_salida PUNTO_Y_COMA .
+
+    $default  reduce usando la regla 60 (sentencia_salida)
+
+
+Estado 125
+
+   64 expresion_cadena: @16 expresion .
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_OR_LOGICO       desplazar e ir al estado 97
+    OP_AND_LOGICO      desplazar e ir al estado 98
+    OP_OR_BIT          desplazar e ir al estado 99
+    OP_EXC_OR          desplazar e ir al estado 100
+    OP_IGUALDAD        desplazar e ir al estado 101
+    OP_RELACION        desplazar e ir al estado 102
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+
+    $default  reduce usando la regla 64 (expresion_cadena)
+
+
+Estado 126
+
+   89 expresion: INI_PARENTESIS expresion FIN_PARENTESIS .
+
+    $default  reduce usando la regla 89 (expresion)
+
+
+Estado 127
+
+   73 expresion: expresion . OP_ES
+   76          | IDENTIFICADOR OP_ARR expresion .
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_MAS_MAS      desplazar e ir al estado 106
+    OP_MENOS_MENOS  desplazar e ir al estado 107
+    OP_ES           desplazar e ir al estado 112
+
+    $default  reduce usando la regla 76 (expresion)
+
+
+Estado 128
+
+   69 llamada_proced: IDENTIFICADOR INI_PARENTESIS $@18 . expresiones FIN_PARENTESIS PUNTO_Y_COMA
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresiones       ir al estado 157
+    expresion         ir al estado 158
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 129
+
+   47 sentencia_asignacion: IDENTIFICADOR $@9 ASIGNACION . $@10 expresion
+
+    $default  reduce usando la regla 46 ($@10)
+
+    $@10  ir al estado 159
+
+
+Estado 130
+
+   12 declar_subprog: cabecera_subprog $@4 bloque .
+
+    $default  reduce usando la regla 12 (declar_subprog)
+
+
+Estado 131
+
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   77          | expresion OP_OR_LOGICO expresion .
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_AND_LOGICO      desplazar e ir al estado 98
+    OP_OR_BIT          desplazar e ir al estado 99
+    OP_EXC_OR          desplazar e ir al estado 100
+    OP_IGUALDAD        desplazar e ir al estado 101
+    OP_RELACION        desplazar e ir al estado 102
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+
+    $default  reduce usando la regla 77 (expresion)
+
+
+Estado 132
+
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   78          | expresion OP_AND_LOGICO expresion .
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_OR_BIT          desplazar e ir al estado 99
+    OP_EXC_OR          desplazar e ir al estado 100
+    OP_IGUALDAD        desplazar e ir al estado 101
+    OP_RELACION        desplazar e ir al estado 102
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+
+    $default  reduce usando la regla 78 (expresion)
+
+
+Estado 133
+
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   79          | expresion OP_OR_BIT expresion .
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_EXC_OR          desplazar e ir al estado 100
+    OP_IGUALDAD        desplazar e ir al estado 101
+    OP_RELACION        desplazar e ir al estado 102
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+
+    $default  reduce usando la regla 79 (expresion)
+
+
+Estado 134
+
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   80          | expresion OP_EXC_OR expresion .
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_IGUALDAD        desplazar e ir al estado 101
+    OP_RELACION        desplazar e ir al estado 102
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+
+    $default  reduce usando la regla 80 (expresion)
+
+
+Estado 135
+
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   81          | expresion OP_IGUALDAD expresion .
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_RELACION        desplazar e ir al estado 102
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+
+    $default  reduce usando la regla 81 (expresion)
+
+
+Estado 136
+
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   82          | expresion OP_RELACION expresion .
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+
+    $default  reduce usando la regla 82 (expresion)
+
+
+Estado 137
+
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   84          | expresion SIGNO expresion .
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+
+    $default  reduce usando la regla 84 (expresion)
+
+
+Estado 138
+
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   85          | expresion OP_MULTIPLICATIVO expresion .
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_CONCATENAR   desplazar e ir al estado 105
+    OP_MAS_MAS      desplazar e ir al estado 106
+    OP_MENOS_MENOS  desplazar e ir al estado 107
+    OP_ES           desplazar e ir al estado 112
+
+    $default  reduce usando la regla 85 (expresion)
+
+
+Estado 139
+
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   86          | expresion OP_CONCATENAR expresion .
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_CONCATENAR   desplazar e ir al estado 105
+    OP_MAS_MAS      desplazar e ir al estado 106
+    OP_MENOS_MENOS  desplazar e ir al estado 107
+    OP_ES           desplazar e ir al estado 112
+
+    $default  reduce usando la regla 86 (expresion)
+
+
+Estado 140
+
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   87          | expresion OP_MAS_MAS expresion . OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_OR_LOGICO       desplazar e ir al estado 97
+    OP_AND_LOGICO      desplazar e ir al estado 98
+    OP_OR_BIT          desplazar e ir al estado 99
+    OP_EXC_OR          desplazar e ir al estado 100
+    OP_IGUALDAD        desplazar e ir al estado 101
+    OP_RELACION        desplazar e ir al estado 102
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ARR             desplazar e ir al estado 160
+    OP_ES              desplazar e ir al estado 112
+
+
+Estado 141
+
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+   88          | expresion OP_MENOS_MENOS expresion .
+
+    OP_MENOS_MENOS  desplazar e ir al estado 107
+    OP_ES           desplazar e ir al estado 112
+
+    $default  reduce usando la regla 88 (expresion)
+
+
+Estado 142
+
+   67 sentencia_mover_lista: expresion OP_ES @17 . PUNTO_Y_COMA
+
+    PUNTO_Y_COMA  desplazar e ir al estado 161
+
+
+Estado 143
+
+   30 variables: IDENTIFICADOR error variables .
+
+    $default  reduce usando la regla 30 (variables)
+
+
+Estado 144
+
+   29 variables: IDENTIFICADOR COMA variables .
+
+    $default  reduce usando la regla 29 (variables)
+
+
+Estado 145
+
+   26 cuerpo_declar_variables: tipo_dato $@7 variables $@8 PUNTO_Y_COMA .
+
+    $default  reduce usando la regla 26 (cuerpo_declar_variables)
+
+
+Estado 146
+
+   14 cabecera_subprog: PROCEDIMIENTO IDENTIFICADOR $@5 INI_PARENTESIS . parametros FIN_PARENTESIS
+
+    LISTA_DE     desplazar e ir al estado 15
+    TIPO_BASICO  desplazar e ir al estado 16
+
+    $default  reduce usando la regla 18 (parametros)
+
+    parametros  ir al estado 162
+    tipo_dato   ir al estado 163
+
+
+Estado 147
+
+  106 lista_constantes_booleanos: CONST_BOOLEANO COMA lista_constantes_booleanos .
+
+    $default  reduce usando la regla 106 (lista_constantes_booleanos)
+
+
+Estado 148
+
+  108 lista_constantes_caracteres: CONST_CARACTER COMA lista_constantes_caracteres .
+
+    $default  reduce usando la regla 108 (lista_constantes_caracteres)
+
+
+Estado 149
+
+  104 lista_constantes_enteros: signo CONST_ENTERO COMA . lista_constantes_enteros
+
+    SIGNO  desplazar e ir al estado 73
+
+    $default  reduce usando la regla 113 (signo)
+
+    lista_constantes_enteros  ir al estado 164
+    signo                     ir al estado 165
+
+
+Estado 150
+
+  102 lista_constantes_reales: signo CONST_REAL COMA . lista_constantes_reales
+
+    SIGNO  desplazar e ir al estado 73
+
+    $default  reduce usando la regla 113 (signo)
+
+    lista_constantes_reales  ir al estado 166
+    signo                    ir al estado 167
+
+
+Estado 151
+
+   55 sentencia_while: MIENTRAS INI_PARENTESIS expresion $@13 . FIN_PARENTESIS HACER sentencia
+
+    FIN_PARENTESIS  desplazar e ir al estado 168
+
+
+Estado 152
+
+   50 sentencia_if: SI INI_PARENTESIS expresion FIN_PARENTESIS . $@11 sentencia sentencia_else
+
+    $default  reduce usando la regla 49 ($@11)
+
+    $@11  ir al estado 169
+
+
+Estado 153
+
+   48 sentencia_asignacion: error .
+
+    $default  reduce usando la regla 48 (sentencia_asignacion)
+
+
+Estado 154
+
+   47 sentencia_asignacion: IDENTIFICADOR . $@9 ASIGNACION $@10 expresion
+
+    $default  reduce usando la regla 45 ($@9)
+
+    $@9  ir al estado 93
+
+
+Estado 155
+
+   58 sentencia_for: HACER INI_PARENTESIS DESDE sentencia_asignacion . $@14 HASTA expresion $@15 FIN_PARENTESIS sentencia
+
+    $default  reduce usando la regla 56 ($@14)
+
+    $@14  ir al estado 170
+
+
+Estado 156
+
+   61 expresiones_salida: expresiones_salida COMA expresion_cadena .
+
+    $default  reduce usando la regla 61 (expresiones_salida)
+
+
+Estado 157
+
+   69 llamada_proced: IDENTIFICADOR INI_PARENTESIS $@18 expresiones . FIN_PARENTESIS PUNTO_Y_COMA
+   70 expresiones: expresiones . COMA expresion
+
+    FIN_PARENTESIS  desplazar e ir al estado 171
+    COMA            desplazar e ir al estado 172
+
+
+Estado 158
+
+   71 expresiones: expresion .
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_OR_LOGICO       desplazar e ir al estado 97
+    OP_AND_LOGICO      desplazar e ir al estado 98
+    OP_OR_BIT          desplazar e ir al estado 99
+    OP_EXC_OR          desplazar e ir al estado 100
+    OP_IGUALDAD        desplazar e ir al estado 101
+    OP_RELACION        desplazar e ir al estado 102
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+
+    $default  reduce usando la regla 71 (expresiones)
+
+
+Estado 159
+
+   47 sentencia_asignacion: IDENTIFICADOR $@9 ASIGNACION $@10 . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 173
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 160
+
+   87 expresion: expresion OP_MAS_MAS expresion OP_ARR . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 174
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 161
+
+   67 sentencia_mover_lista: expresion OP_ES @17 PUNTO_Y_COMA .
+
+    $default  reduce usando la regla 67 (sentencia_mover_lista)
+
+
+Estado 162
+
+   14 cabecera_subprog: PROCEDIMIENTO IDENTIFICADOR $@5 INI_PARENTESIS parametros . FIN_PARENTESIS
+   15 parametros: parametros . COMA tipo_dato IDENTIFICADOR
+   16           | parametros . error tipo_dato IDENTIFICADOR
+
+    error           desplazar e ir al estado 175
+    FIN_PARENTESIS  desplazar e ir al estado 176
+    COMA            desplazar e ir al estado 177
+
+
+Estado 163
+
+   17 parametros: tipo_dato . IDENTIFICADOR
+
+    IDENTIFICADOR  desplazar e ir al estado 178
+
+
+Estado 164
+
+  104 lista_constantes_enteros: signo CONST_ENTERO COMA lista_constantes_enteros .
+
+    $default  reduce usando la regla 104 (lista_constantes_enteros)
+
+
+Estado 165
+
+  103 lista_constantes_enteros: signo . CONST_ENTERO
+  104                         | signo . CONST_ENTERO COMA lista_constantes_enteros
+
+    CONST_ENTERO  desplazar e ir al estado 117
+
+
+Estado 166
+
+  102 lista_constantes_reales: signo CONST_REAL COMA lista_constantes_reales .
+
+    $default  reduce usando la regla 102 (lista_constantes_reales)
+
+
+Estado 167
+
+  101 lista_constantes_reales: signo . CONST_REAL
+  102                        | signo . CONST_REAL COMA lista_constantes_reales
+
+    CONST_REAL  desplazar e ir al estado 118
+
+
+Estado 168
+
+   55 sentencia_while: MIENTRAS INI_PARENTESIS expresion $@13 FIN_PARENTESIS . HACER sentencia
+
+    HACER  desplazar e ir al estado 179
+
+
+Estado 169
+
+   50 sentencia_if: SI INI_PARENTESIS expresion FIN_PARENTESIS $@11 . sentencia sentencia_else
+
+    error              desplazar e ir al estado 25
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_INICIO_LISTA    desplazar e ir al estado 28
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_LLAVES         desplazar e ir al estado 5
+    MIENTRAS           desplazar e ir al estado 33
+    SI                 desplazar e ir al estado 34
+    HACER              desplazar e ir al estado 35
+    LEER               desplazar e ir al estado 36
+    ESCRIBIR           desplazar e ir al estado 37
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 43
+
+    bloque                 ir al estado 44
+    sentencia              ir al estado 180
+    sentencia2             ir al estado 50
+    sentencia_comienzo     ir al estado 51
+    sentencia_asignacion   ir al estado 52
+    sentencia_if           ir al estado 53
+    sentencia_while        ir al estado 54
+    sentencia_for          ir al estado 55
+    sentencia_entrada      ir al estado 56
+    sentencia_salida       ir al estado 57
+    sentencia_mover_lista  ir al estado 58
+    llamada_proced         ir al estado 59
+    expresion              ir al estado 60
+    lista_constantes       ir al estado 61
+    constante              ir al estado 62
+
+
+Estado 170
+
+   58 sentencia_for: HACER INI_PARENTESIS DESDE sentencia_asignacion $@14 . HASTA expresion $@15 FIN_PARENTESIS sentencia
+
+    HASTA  desplazar e ir al estado 181
+
+
+Estado 171
+
+   69 llamada_proced: IDENTIFICADOR INI_PARENTESIS $@18 expresiones FIN_PARENTESIS . PUNTO_Y_COMA
+
+    PUNTO_Y_COMA  desplazar e ir al estado 182
+
+
+Estado 172
+
+   70 expresiones: expresiones COMA . expresion
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 183
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 173
+
+   47 sentencia_asignacion: IDENTIFICADOR $@9 ASIGNACION $@10 expresion .
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_OR_LOGICO       desplazar e ir al estado 97
+    OP_AND_LOGICO      desplazar e ir al estado 98
+    OP_OR_BIT          desplazar e ir al estado 99
+    OP_EXC_OR          desplazar e ir al estado 100
+    OP_IGUALDAD        desplazar e ir al estado 101
+    OP_RELACION        desplazar e ir al estado 102
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+
+    $default  reduce usando la regla 47 (sentencia_asignacion)
+
+
+Estado 174
+
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   87          | expresion OP_MAS_MAS expresion OP_ARR expresion .
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_ES  desplazar e ir al estado 112
+
+    $default  reduce usando la regla 87 (expresion)
+
+
+Estado 175
+
+   16 parametros: parametros error . tipo_dato IDENTIFICADOR
+
+    LISTA_DE     desplazar e ir al estado 15
+    TIPO_BASICO  desplazar e ir al estado 16
+
+    tipo_dato  ir al estado 184
+
+
+Estado 176
+
+   14 cabecera_subprog: PROCEDIMIENTO IDENTIFICADOR $@5 INI_PARENTESIS parametros FIN_PARENTESIS .
+
+    $default  reduce usando la regla 14 (cabecera_subprog)
+
+
+Estado 177
+
+   15 parametros: parametros COMA . tipo_dato IDENTIFICADOR
+
+    LISTA_DE     desplazar e ir al estado 15
+    TIPO_BASICO  desplazar e ir al estado 16
+
+    tipo_dato  ir al estado 185
+
+
+Estado 178
+
+   17 parametros: tipo_dato IDENTIFICADOR .
+
+    $default  reduce usando la regla 17 (parametros)
+
+
+Estado 179
+
+   55 sentencia_while: MIENTRAS INI_PARENTESIS expresion $@13 FIN_PARENTESIS HACER . sentencia
+
+    error              desplazar e ir al estado 25
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_INICIO_LISTA    desplazar e ir al estado 28
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_LLAVES         desplazar e ir al estado 5
+    MIENTRAS           desplazar e ir al estado 33
+    SI                 desplazar e ir al estado 34
+    HACER              desplazar e ir al estado 35
+    LEER               desplazar e ir al estado 36
+    ESCRIBIR           desplazar e ir al estado 37
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 43
+
+    bloque                 ir al estado 44
+    sentencia              ir al estado 186
+    sentencia2             ir al estado 50
+    sentencia_comienzo     ir al estado 51
+    sentencia_asignacion   ir al estado 52
+    sentencia_if           ir al estado 53
+    sentencia_while        ir al estado 54
+    sentencia_for          ir al estado 55
+    sentencia_entrada      ir al estado 56
+    sentencia_salida       ir al estado 57
+    sentencia_mover_lista  ir al estado 58
+    llamada_proced         ir al estado 59
+    expresion              ir al estado 60
+    lista_constantes       ir al estado 61
+    constante              ir al estado 62
+
+
+Estado 180
+
+   50 sentencia_if: SI INI_PARENTESIS expresion FIN_PARENTESIS $@11 sentencia . sentencia_else
+
+    SINO  desplazar e ir al estado 187
+
+    SINO      [reduce usando la regla 53 (sentencia_else)]
+    $default  reduce usando la regla 53 (sentencia_else)
+
+    sentencia_else  ir al estado 188
+
+
+Estado 181
+
+   58 sentencia_for: HACER INI_PARENTESIS DESDE sentencia_asignacion $@14 HASTA . expresion $@15 FIN_PARENTESIS sentencia
+
+    error              desplazar e ir al estado 65
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 66
+
+    expresion         ir al estado 189
+    lista_constantes  ir al estado 61
+    constante         ir al estado 62
+
+
+Estado 182
+
+   69 llamada_proced: IDENTIFICADOR INI_PARENTESIS $@18 expresiones FIN_PARENTESIS PUNTO_Y_COMA .
+
+    $default  reduce usando la regla 69 (llamada_proced)
+
+
+Estado 183
+
+   70 expresiones: expresiones COMA expresion .
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_OR_LOGICO       desplazar e ir al estado 97
+    OP_AND_LOGICO      desplazar e ir al estado 98
+    OP_OR_BIT          desplazar e ir al estado 99
+    OP_EXC_OR          desplazar e ir al estado 100
+    OP_IGUALDAD        desplazar e ir al estado 101
+    OP_RELACION        desplazar e ir al estado 102
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+
+    $default  reduce usando la regla 70 (expresiones)
+
+
+Estado 184
+
+   16 parametros: parametros error tipo_dato . IDENTIFICADOR
+
+    IDENTIFICADOR  desplazar e ir al estado 190
+
+
+Estado 185
+
+   15 parametros: parametros COMA tipo_dato . IDENTIFICADOR
+
+    IDENTIFICADOR  desplazar e ir al estado 191
+
+
+Estado 186
+
+   55 sentencia_while: MIENTRAS INI_PARENTESIS expresion $@13 FIN_PARENTESIS HACER sentencia .
+
+    $default  reduce usando la regla 55 (sentencia_while)
+
+
+Estado 187
+
+   52 sentencia_else: SINO . $@12 sentencia
+
+    $default  reduce usando la regla 51 ($@12)
+
+    $@12  ir al estado 192
+
+
+Estado 188
+
+   50 sentencia_if: SI INI_PARENTESIS expresion FIN_PARENTESIS $@11 sentencia sentencia_else .
+
+    $default  reduce usando la regla 50 (sentencia_if)
+
+
+Estado 189
+
+   58 sentencia_for: HACER INI_PARENTESIS DESDE sentencia_asignacion $@14 HASTA expresion . $@15 FIN_PARENTESIS sentencia
+   73 expresion: expresion . OP_ES
+   77          | expresion . OP_OR_LOGICO expresion
+   78          | expresion . OP_AND_LOGICO expresion
+   79          | expresion . OP_OR_BIT expresion
+   80          | expresion . OP_EXC_OR expresion
+   81          | expresion . OP_IGUALDAD expresion
+   82          | expresion . OP_RELACION expresion
+   84          | expresion . SIGNO expresion
+   85          | expresion . OP_MULTIPLICATIVO expresion
+   86          | expresion . OP_CONCATENAR expresion
+   87          | expresion . OP_MAS_MAS expresion OP_ARR expresion
+   88          | expresion . OP_MENOS_MENOS expresion
+
+    OP_OR_LOGICO       desplazar e ir al estado 97
+    OP_AND_LOGICO      desplazar e ir al estado 98
+    OP_OR_BIT          desplazar e ir al estado 99
+    OP_EXC_OR          desplazar e ir al estado 100
+    OP_IGUALDAD        desplazar e ir al estado 101
+    OP_RELACION        desplazar e ir al estado 102
+    SIGNO              desplazar e ir al estado 103
+    OP_MULTIPLICATIVO  desplazar e ir al estado 104
+    OP_CONCATENAR      desplazar e ir al estado 105
+    OP_MAS_MAS         desplazar e ir al estado 106
+    OP_MENOS_MENOS     desplazar e ir al estado 107
+    OP_ES              desplazar e ir al estado 112
+
+    $default  reduce usando la regla 57 ($@15)
+
+    $@15  ir al estado 193
+
+
+Estado 190
+
+   16 parametros: parametros error tipo_dato IDENTIFICADOR .
+
+    $default  reduce usando la regla 16 (parametros)
+
+
+Estado 191
+
+   15 parametros: parametros COMA tipo_dato IDENTIFICADOR .
+
+    $default  reduce usando la regla 15 (parametros)
+
+
+Estado 192
+
+   52 sentencia_else: SINO $@12 . sentencia
+
+    error              desplazar e ir al estado 25
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_INICIO_LISTA    desplazar e ir al estado 28
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_LLAVES         desplazar e ir al estado 5
+    MIENTRAS           desplazar e ir al estado 33
+    SI                 desplazar e ir al estado 34
+    HACER              desplazar e ir al estado 35
+    LEER               desplazar e ir al estado 36
+    ESCRIBIR           desplazar e ir al estado 37
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 43
+
+    bloque                 ir al estado 44
+    sentencia              ir al estado 194
+    sentencia2             ir al estado 50
+    sentencia_comienzo     ir al estado 51
+    sentencia_asignacion   ir al estado 52
+    sentencia_if           ir al estado 53
+    sentencia_while        ir al estado 54
+    sentencia_for          ir al estado 55
+    sentencia_entrada      ir al estado 56
+    sentencia_salida       ir al estado 57
+    sentencia_mover_lista  ir al estado 58
+    llamada_proced         ir al estado 59
+    expresion              ir al estado 60
+    lista_constantes       ir al estado 61
+    constante              ir al estado 62
+
+
+Estado 193
+
+   58 sentencia_for: HACER INI_PARENTESIS DESDE sentencia_asignacion $@14 HASTA expresion $@15 . FIN_PARENTESIS sentencia
+
+    FIN_PARENTESIS  desplazar e ir al estado 195
+
+
+Estado 194
+
+   52 sentencia_else: SINO $@12 sentencia .
+
+    $default  reduce usando la regla 52 (sentencia_else)
+
+
+Estado 195
+
+   58 sentencia_for: HACER INI_PARENTESIS DESDE sentencia_asignacion $@14 HASTA expresion $@15 FIN_PARENTESIS . sentencia
+
+    error              desplazar e ir al estado 25
+    SIGNO              desplazar e ir al estado 26
+    OP_UNARIO          desplazar e ir al estado 27
+    OP_INICIO_LISTA    desplazar e ir al estado 28
+    OP_LONGITUD_LISTA  desplazar e ir al estado 29
+    OP_ELEMENTO_LISTA  desplazar e ir al estado 30
+    INI_CORCHETE       desplazar e ir al estado 32
+    INI_LLAVES         desplazar e ir al estado 5
+    MIENTRAS           desplazar e ir al estado 33
+    SI                 desplazar e ir al estado 34
+    HACER              desplazar e ir al estado 35
+    LEER               desplazar e ir al estado 36
+    ESCRIBIR           desplazar e ir al estado 37
+    INI_PARENTESIS     desplazar e ir al estado 38
+    CONST_BOOLEANO     desplazar e ir al estado 39
+    CONST_CARACTER     desplazar e ir al estado 40
+    CONST_ENTERO       desplazar e ir al estado 41
+    CONST_REAL         desplazar e ir al estado 42
+    IDENTIFICADOR      desplazar e ir al estado 43
+
+    bloque                 ir al estado 44
+    sentencia              ir al estado 196
+    sentencia2             ir al estado 50
+    sentencia_comienzo     ir al estado 51
+    sentencia_asignacion   ir al estado 52
+    sentencia_if           ir al estado 53
+    sentencia_while        ir al estado 54
+    sentencia_for          ir al estado 55
+    sentencia_entrada      ir al estado 56
+    sentencia_salida       ir al estado 57
+    sentencia_mover_lista  ir al estado 58
+    llamada_proced         ir al estado 59
+    expresion              ir al estado 60
+    lista_constantes       ir al estado 61
+    constante              ir al estado 62
+
+
+Estado 196
+
+   58 sentencia_for: HACER INI_PARENTESIS DESDE sentencia_asignacion $@14 HASTA expresion $@15 FIN_PARENTESIS sentencia .
+
+    $default  reduce usando la regla 58 (sentencia_for)

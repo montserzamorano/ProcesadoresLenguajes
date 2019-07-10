@@ -1,0 +1,51 @@
+principal{
+
+    inicio_variables
+        entero valor , a, b, hola;
+        booleano boo;
+        real r;
+        caracter c
+        lista de entero le;
+    fin_variables
+
+    procedimiento funcionA (entero a1, real a2, caracter a3) {
+        inicio_variables
+          real a;
+        fin_variables
+        procedimiento funcionB (entero a1, real b2, caracter b3) {
+            hola = 3;
+        }
+        hola = 3;
+    }
+
+    funcionA(a,r,c);
+
+    boo = verdadero;
+
+    mientras (!boo) hacer{
+        si (boo) {
+            hola = 1;
+        }
+        hola = 2 + 7 * (1 + 2);
+    }
+
+    si (b==1) {
+        inicio_variables
+            entero varEntero1, varEntero2;
+            real plsWork;
+        fin_variables
+
+        hola = 2;
+    }
+
+    le = le--(a-b);
+
+    hacer (desde hola = 1 hasta hola < 10) {
+        a = b+1;
+    }
+
+    si (b == 1){
+        hola = 2;
+    }
+
+}

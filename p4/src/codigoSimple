@@ -1,0 +1,28 @@
+principal{
+
+    inicio_variables
+        entero ve ;
+        real vf ;
+        caracter c3;
+        lista de entero d1, s2;
+        lista de caracter s1;
+    fin_variables
+
+    procedimiento funcionA (entero a1, real a2, caracter ve) {
+      inicio_variables
+        entero oye, d1;
+      fin_variables
+        procedimiento funcionB(entero d2){
+        inicio_variables
+          caracter oye1;
+        fin_variables
+        }
+        funcionB(a1,ee);
+        ve = 3;
+        d1 = 3*s2;
+        d1 = d1-1;
+        funcionB(d1);
+        d1>>;
+    }
+    funcionA(ve,vf,c3);
+}

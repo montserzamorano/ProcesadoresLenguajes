@@ -1,0 +1,45 @@
+principal{
+
+    inicio_variables
+        entero valor, a, b, hola;
+        booleano boo, boo2;
+        real r;
+        caracter c;
+        lista de entero le, la;
+    fin_variables
+
+    le = [1,2,3,4,5];
+    le = [1,2,3,4,5,6];
+    le = [1,2,3,4];
+
+    valor = 7;
+
+    a = 2;
+    boo = falso;
+
+    hola = 2 + 7 * (a + 2);
+
+    si (b==1) {
+
+        hola = 2;
+    }
+
+    hacer (desde hola = 1 hasta hola < 10) {
+        a = b+1;
+        hola = hola + 1;
+        escribir "TEST\n";
+    }
+
+    mientras (!boo) hacer{
+        hola = hola + (2 + 7) * a;
+        si (hola > 100) {
+            boo = verdadero;
+        }
+    }
+
+    hola=le@1;
+
+    escribir "Esta practica me tiene contenta. Valor 2 de la lista le: ", le@2, "\n";
+
+
+}
